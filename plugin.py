@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""聊天护栏（Chat Guard）— P1：拟人化发送节奏。
+"""mai输出拟人强化（Alcpare.chat_guard）— 让麦麦说话更像人。
 
 背景（实测数据）：
     同一个人连发两条的间隔中位数 —— 小萤 0.28 秒 ✗ / 真人 5.00 秒 ✓ / 其他 AI 3.00 秒。
@@ -403,7 +403,7 @@ class InjectSectionConfig(PluginConfigBase):
 
 
 class ChatGuardConfig(PluginConfigBase):
-    """聊天护栏配置。"""
+    """mai输出拟人强化 —— 配置。"""
 
     plugin: PluginSectionConfig = Field(default_factory=PluginSectionConfig)
     rhythm: RhythmSectionConfig = Field(default_factory=RhythmSectionConfig)
@@ -519,7 +519,7 @@ def decide(
 
 
 class ChatGuardPlugin(MaiBotPlugin):
-    """聊天护栏：先把"发送节奏"这一块做踏实。"""
+    """mai输出拟人强化：让她的回复像人在打字。"""
 
     config_model = ChatGuardConfig
 
@@ -545,7 +545,7 @@ class ChatGuardPlugin(MaiBotPlugin):
 
         self._refresh()
         self.ctx.logger.info(
-            f"[护栏] 已加载：打字节奏 {self.config.rhythm.min_chars}~{self.config.rhythm.max_chars} 字 "
+            f"[拟人强化] 已加载：打字节奏 {self.config.rhythm.min_chars}~{self.config.rhythm.max_chars} 字 "
             f"| 系统文案拦截 {len(self._sys_patterns)} 条 "
             f"| 学习守卫 {len(self._guard_patterns)} 条 "
             f"| 用词黑名单 {len(self.config.inject.word_list())} 词 "
@@ -562,7 +562,7 @@ class ChatGuardPlugin(MaiBotPlugin):
             pass
         self._refresh()
         self.ctx.logger.info(
-            f"[护栏] 配置已刷新：打字节奏 {self.config.rhythm.min_chars}~{self.config.rhythm.max_chars} 字 "
+            f"[拟人强化] 配置已刷新：打字节奏 {self.config.rhythm.min_chars}~{self.config.rhythm.max_chars} 字 "
             f"| 系统文案拦截 {len(self._sys_patterns)} 条 "
             f"| 学习守卫 {len(self._guard_patterns)} 条 "
             f"| 用词黑名单 {len(self.config.inject.word_list())} 词"
@@ -572,7 +572,7 @@ class ChatGuardPlugin(MaiBotPlugin):
         """卸载/重载时输出统计，便于核对各模块到底盯到了什么。"""
 
         self.ctx.logger.info(
-            f"[护栏] 已卸载：判断 {self._decided} 条 · 强制延迟 {self._forced} 条 · "
+            f"[拟人强化] 已卸载：判断 {self._decided} 条 · 强制延迟 {self._forced} 条 · "
             f"系统文案 {self._sys_seen} 条"
         )
 
@@ -621,7 +621,7 @@ class ChatGuardPlugin(MaiBotPlugin):
                     if not pattern.search(text):
                         continue
                     self._sys_seen += 1
-                    self.ctx.logger.info(f"[护栏] 已拦截系统文案：{text[:34]}")
+                    self.ctx.logger.info(f"[拟人强化] 已拦截系统文案：{text[:34]}")
                     return {"action": "abort"}
 
             # ② 打字节奏：让短回复也「打一会儿字」
@@ -636,16 +636,16 @@ class ChatGuardPlugin(MaiBotPlugin):
                 patterns=self._patterns,
             )
             if not force:
-                self.ctx.logger.debug(f"[护栏] 不改（{why}）：{text[:30]}")
+                self.ctx.logger.debug(f"[拟人强化] 不改（{why}）：{text[:30]}")
                 return base
 
             seconds = typing_seconds(text, self._typing_speed)
             kwargs["typing"] = True
             self._forced += 1
-            self.ctx.logger.info(f"[护栏] 已启用打字延迟 {seconds:.1f} 秒（{why}）：{text[:30]}")
+            self.ctx.logger.info(f"[拟人强化] 已启用打字延迟 {seconds:.1f} 秒（{why}）：{text[:30]}")
             return {"action": "continue", "modified_kwargs": kwargs}
         except Exception as exc:  # noqa: BLE001
-            self.ctx.logger.warning(f"[护栏] 发送前处理失败，已跳过：{type(exc).__name__} {exc}")
+            self.ctx.logger.warning(f"[拟人强化] 发送前处理失败，已跳过：{type(exc).__name__} {exc}")
             return base
 
 
@@ -673,13 +673,13 @@ class ChatGuardPlugin(MaiBotPlugin):
 
             allow, why = judge_learned_style(style, situation, cfg.vary_marks_list(), self._guard_patterns)
             if allow:
-                self.ctx.logger.debug(f"[护栏] 允许入库（{why}）：{style[:34]}")
+                self.ctx.logger.debug(f"[拟人强化] 允许入库（{why}）：{style[:34]}")
                 return base
             self._learn_blocked += 1
-            self.ctx.logger.info(f"[护栏] 已拦下入库（{why}）：{style[:40]}")
+            self.ctx.logger.info(f"[拟人强化] 已拦下入库（{why}）：{style[:40]}")
             return {"action": "abort"}
         except Exception as exc:  # noqa: BLE001
-            self.ctx.logger.warning(f"[护栏] 入库判定失败，已放行：{type(exc).__name__} {exc}")
+            self.ctx.logger.warning(f"[拟人强化] 入库判定失败，已放行：{type(exc).__name__} {exc}")
             return base
 
 
@@ -713,20 +713,20 @@ class ChatGuardPlugin(MaiBotPlugin):
 
             dedupe_key = self._dedupe_key("replyer", kwargs, cfg.marker)
             if self._is_duplicate(dedupe_key):
-                self.ctx.logger.debug(f"[护栏][跳过/replyer] 本轮已注入过（{dedupe_key}）")
+                self.ctx.logger.debug(f"[拟人强化][跳过/replyer] 本轮已注入过（{dedupe_key}）")
                 return base
 
             self._inject_hits += 1
 
             target = self._append_note(kwargs, note, cfg.marker)
             if target is None:
-                self.ctx.logger.warning("[护栏] 注入失败：钩子既无 items 也无 extra_prompt")
+                self.ctx.logger.warning("[拟人强化] 注入失败：钩子既无 items 也无 extra_prompt")
                 return base
             self._mark_injected(dedupe_key)
-            self.ctx.logger.info(f"[护栏] 已注入({target})：{note[:60]}")
+            self.ctx.logger.info(f"[拟人强化] 已注入({target})：{note[:60]}")
             return {"action": "continue", "modified_kwargs": kwargs}
         except Exception as exc:  # noqa: BLE001
-            self.ctx.logger.warning(f"[护栏] 注入失败，已跳过：{type(exc).__name__} {exc}")
+            self.ctx.logger.warning(f"[拟人强化] 注入失败，已跳过：{type(exc).__name__} {exc}")
             return base
 
     @HookHandler(
@@ -753,7 +753,7 @@ class ChatGuardPlugin(MaiBotPlugin):
 
             dedupe_key = self._dedupe_key("planner", kwargs, cfg.planner_marker)
             if self._is_duplicate(dedupe_key):
-                self.ctx.logger.debug(f"[护栏][跳过/planner] 本轮已注入过（{dedupe_key}）")
+                self.ctx.logger.debug(f"[拟人强化][跳过/planner] 本轮已注入过（{dedupe_key}）")
                 return base
 
             self._inject_planner += 1
@@ -761,10 +761,10 @@ class ChatGuardPlugin(MaiBotPlugin):
             if target is None:
                 return base
             self._mark_injected(dedupe_key)
-            self.ctx.logger.info(f"[护栏] 已注入 planner({target})：{note[:56]}")
+            self.ctx.logger.info(f"[拟人强化] 已注入 planner({target})：{note[:56]}")
             return {"action": "continue", "modified_kwargs": kwargs}
         except Exception as exc:  # noqa: BLE001
-            self.ctx.logger.warning(f"[护栏] planner 注入失败，已跳过：{type(exc).__name__} {exc}")
+            self.ctx.logger.warning(f"[拟人强化] planner 注入失败，已跳过：{type(exc).__name__} {exc}")
             return base
 
     @staticmethod

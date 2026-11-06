@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "version": "0.7.0",
-  "name": "聊天护栏（测试版）",
-  "description": "拟人化聊天护栏：发送节奏（打字延迟）/ 系统文案闸门 / 重复文本防抖 / 文学腔监控。每个模块都有 log 模式，可以先只观察不改行为。",
+  "name": "mai输出拟人强化",
+  "description": "让麦麦说话更像人：打字节奏（短回复也打一会儿字）/ 每轮注入回复规则（Replyer + Planner 双阶段）/ 拦截系统话术外泄 / 学习守卫（防止固定模板学进表达库）",
   "author": {
     "name": "Alcpare",
     "url": "https://github.com/Alcpare"

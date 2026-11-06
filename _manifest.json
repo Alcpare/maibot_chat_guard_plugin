@@ -9,8 +9,9 @@
   },
   "license": "MIT",
   "urls": {
-    "repository": "https://github.com/Alcpare/maibot_chat_guard",
-    "homepage": "https://github.com/Alcpare/maibot_chat_guard"
+    "repository": "https://github.com/Alcpare/maibot_chat_guard_plugin",
+    "homepage": "https://github.com/Alcpare/maibot_chat_guard_plugin",
+    "issues": "https://github.com/Alcpare/maibot_chat_guard_plugin/issues"
   },
   "changelog": "README.md",
   "host_application": {

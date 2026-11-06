@@ -1,0 +1,23 @@
+# 运行时生成的用户配置（含个人隐私，绝不能进仓库）
+/config.toml
+
+# 配置备份（插件自动生成的）
+/config_back/
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# 测试（本地开发用，不进发布仓库）
+/tests/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 备份文件
+*.bak_*
+*.bak
